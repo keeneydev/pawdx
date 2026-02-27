@@ -1,0 +1,59 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import DogCard from "../components/DogCard.astro";
+
+interface Dog {
+  id: string;
+  dog_name: string;
+  caption: string | null;
+  link: string | null;
+  image_key: string;
+}
+
+const db = Astro.locals.runtime.env.DB;
+const { results } = await db
+  .prepare("SELECT id, dog_name, caption, link, image_key FROM submissions WHERE status = 'approved' ORDER BY created_at DESC")
+  .all<Dog>();
+---
+
+<Layout title="pawdx — dogs of the internet">
+  <Header />
+  <main>
+    {results.length === 0 ? (
+      <p class="empty">No dogs yet. Be the first to <a href="/submit">submit one</a>!</p>
+    ) : (
+      <div class="grid">
+        {results.map((dog) => (
+          <DogCard
+            id={dog.id}
+            dogName={dog.dog_name}
+            caption={dog.caption ?? undefined}
+            link={dog.link ?? undefined}
+            imageKey={dog.image_key}
+          />
+        ))}
+      </div>
+    )}
+  </main>
+</Layout>
+
+<style>
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .empty {
+    text-align: center;
+    color: #888;
+    padding: 4rem 0;
+  }
+</style>

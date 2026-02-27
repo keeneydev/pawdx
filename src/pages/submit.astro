@@ -1,0 +1,31 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import SubmitForm from "../components/SubmitForm.astro";
+---
+
+<Layout title="Submit a dog — pawdx">
+  <Header />
+  <main>
+    <h1>Submit your dog</h1>
+    <p>Upload a photo and it will appear on the gallery once approved.</p>
+    <SubmitForm />
+  </main>
+</Layout>
+
+<style>
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  h1 {
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+</style>

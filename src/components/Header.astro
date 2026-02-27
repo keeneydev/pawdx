@@ -1,0 +1,51 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header>
+  <nav>
+    <a href="/" class="logo">pawdx</a>
+    <div class="links">
+      <a href="/" class:list={[{ active: currentPath === "/" }]}>Gallery</a>
+      <a href="/submit" class:list={[{ active: currentPath === "/submit" }]}>Submit</a>
+    </div>
+  </nav>
+</header>
+
+<style>
+  header {
+    border-bottom: 1px solid #e5e2db;
+    background: #fff;
+  }
+
+  nav {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: #1a1a1a;
+  }
+
+  .links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .links a {
+    text-decoration: none;
+    color: #666;
+  }
+
+  .links a.active {
+    color: #4a6741;
+    font-weight: 600;
+  }
+</style>

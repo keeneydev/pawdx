@@ -1,0 +1,215 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const cookie = Astro.cookies.get("admin_session");
+const env = Astro.locals.runtime.env;
+const authenticated = cookie?.value === env.ADMIN_PASSWORD;
+
+if (!authenticated) {
+  // Show login form
+}
+---
+
+<Layout title="Admin — pawdx">
+  {!authenticated ? (
+    <main>
+      <h1>Admin Login</h1>
+      <form method="POST" action="/api/admin/login">
+        <label>
+          Password
+          <input type="password" name="password" required />
+        </label>
+        <button type="submit">Log in</button>
+      </form>
+    </main>
+  ) : (
+    <main>
+      <div class="header">
+        <h1>Moderation Dashboard</h1>
+        <a href="/">Back to gallery</a>
+      </div>
+      <div id="pending">
+        <p class="loading">Loading pending submissions...</p>
+      </div>
+    </main>
+  )}
+</Layout>
+
+<script>
+  async function loadPending() {
+    const container = document.getElementById("pending");
+    if (!container) return;
+
+    try {
+      const res = await fetch("/api/admin/pending");
+      const dogs = await res.json();
+
+      if (!res.ok) {
+        container.innerHTML = `<p>Error loading submissions.</p>`;
+        return;
+      }
+
+      if (dogs.length === 0) {
+        container.innerHTML = `<p class="empty">No pending submissions.</p>`;
+        return;
+      }
+
+      container.innerHTML = dogs
+        .map(
+          (dog: any) => `
+        <div class="card" data-id="${dog.id}">
+          <img src="/api/image/${dog.image_key}" alt="${dog.dog_name}" />
+          <div class="info">
+            <strong>${dog.dog_name}</strong>
+            ${dog.caption ? `<p>${dog.caption}</p>` : ""}
+            ${dog.link ? `<a href="${dog.link}" target="_blank">${dog.link}</a>` : ""}
+          </div>
+          <div class="actions">
+            <button class="approve" onclick="moderate('${dog.id}', 'approved')">Approve</button>
+            <button class="reject" onclick="moderate('${dog.id}', 'rejected')">Reject</button>
+          </div>
+        </div>
+      `
+        )
+        .join("");
+    } catch {
+      container.innerHTML = `<p>Network error.</p>`;
+    }
+  }
+
+  async function moderate(id: string, action: string) {
+    const res = await fetch("/api/admin/moderate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, action }),
+    });
+
+    if (res.ok) {
+      const card = document.querySelector(`[data-id="${id}"]`);
+      card?.remove();
+
+      const container = document.getElementById("pending");
+      if (container && container.children.length === 0) {
+        container.innerHTML = `<p class="empty">No pending submissions.</p>`;
+      }
+    }
+  }
+
+  // Expose to inline onclick handlers
+  (window as any).moderate = moderate;
+
+  loadPending();
+</script>
+
+<style>
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    margin-bottom: 1rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 320px;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-weight: 500;
+  }
+
+  input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font: inherit;
+  }
+
+  form button {
+    padding: 0.6rem 1.5rem;
+    background: #4a6741;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-start;
+  }
+
+  .card {
+    border: 1px solid #e5e2db;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    background: #fff;
+  }
+
+  .card img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .info {
+    padding: 1rem;
+  }
+
+  .info p {
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+  .info a {
+    font-size: 0.85rem;
+    word-break: break-all;
+  }
+
+  .actions {
+    padding: 0 1rem 1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .actions button {
+    padding: 0.4rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .approve {
+    background: #4a6741;
+    color: #fff;
+  }
+
+  .reject {
+    background: #c44;
+    color: #fff;
+  }
+
+  .empty,
+  .loading {
+    color: #888;
+    text-align: center;
+    padding: 2rem 0;
+  }
+</style>

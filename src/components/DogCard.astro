@@ -1,0 +1,55 @@
+---
+interface Props {
+  id: string;
+  dogName: string;
+  caption?: string;
+  link?: string;
+  imageKey: string;
+}
+
+const { id, dogName, caption, link, imageKey } = Astro.props;
+---
+
+<article class="card">
+  <img src={`/api/image/${imageKey}`} alt={dogName} loading="lazy" />
+  <div class="info">
+    <h2>{dogName}</h2>
+    {caption && <p>{caption}</p>}
+    {link && <a href={link} target="_blank" rel="noopener noreferrer">{link}</a>}
+  </div>
+</article>
+
+<style>
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  .card img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+  }
+
+  .info {
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+  a {
+    font-size: 0.85rem;
+    word-break: break-all;
+  }
+</style>

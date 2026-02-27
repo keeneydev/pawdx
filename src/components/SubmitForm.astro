@@ -1,0 +1,99 @@
+---
+---
+
+<form id="submit-form" enctype="multipart/form-data">
+  <label>
+    Dog's name *
+    <input type="text" name="dog_name" required />
+  </label>
+
+  <label>
+    Photo *
+    <input type="file" name="photo" accept="image/*" required />
+  </label>
+
+  <label>
+    Caption
+    <textarea name="caption" rows="3"></textarea>
+  </label>
+
+  <label>
+    Link (website, social, etc.)
+    <input type="url" name="link" placeholder="https://" />
+  </label>
+
+  <button type="submit">Submit</button>
+  <p id="status" aria-live="polite"></p>
+</form>
+
+<script>
+  const form = document.getElementById("submit-form") as HTMLFormElement;
+  const status = document.getElementById("status")!;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    status.textContent = "Uploading...";
+
+    const data = new FormData(form);
+
+    try {
+      const res = await fetch("/api/submit", { method: "POST", body: data });
+      const json = await res.json();
+
+      if (res.ok) {
+        status.textContent = "Submitted! Your photo will appear after review.";
+        form.reset();
+      } else {
+        status.textContent = json.error || "Something went wrong.";
+      }
+    } catch {
+      status.textContent = "Network error. Please try again.";
+    }
+  });
+</script>
+
+<style>
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 480px;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  input,
+  textarea {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font: inherit;
+  }
+
+  button {
+    padding: 0.6rem 1.5rem;
+    background: #4a6741;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-start;
+  }
+
+  button:hover {
+    background: #3d5636;
+  }
+
+  #status {
+    font-size: 0.9rem;
+    color: #555;
+  }
+</style>

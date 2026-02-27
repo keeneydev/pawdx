@@ -1,0 +1,11 @@
+name = "pawdx"
+compatibility_date = "2025-11-18"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pawdx-db"
+database_id = "YOUR_D1_DATABASE_ID"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "pawdx-images"
