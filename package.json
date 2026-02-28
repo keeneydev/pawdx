@@ -13,10 +13,16 @@
     "db:new": "wrangler d1 migrations create pawdx-db"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.5.0",
-    "astro": "^5.5.0"
+    "@astrojs/cloudflare": "^12.6.12",
+    "astro": "^5.18.0"
   },
   "devDependencies": {
     "wrangler": "^4.69.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "wrangler": "^4.69.0",
+      "undici": "^7.18.2"
+    }
   }
 }
