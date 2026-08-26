@@ -23,7 +23,7 @@ const initialDog = results[initialIndex];
 
 <Layout title="pawdx — dogs of the internet">
   <Header />
-  <main>
+  <main class="gallery-page">
     {!initialDog ? (
       <p class="empty">No dogs yet. Be the first to <a href="/submit">submit one</a>!</p>
     ) : (
@@ -32,11 +32,10 @@ const initialDog = results[initialIndex];
           <DogCard
             id={initialDog.id}
             dogName={initialDog.dog_name}
-            caption={initialDog.caption ?? undefined}
-            link={initialDog.link ?? undefined}
             imageKey={initialDog.image_key}
           />
         </div>
+        <p class="swipe-hint">Swipe right for the next pup</p>
         <button id="new-dog" type="button">Show me another dog</button>
       </section>
     )}
@@ -47,8 +46,11 @@ const initialDog = results[initialIndex];
       const card = document.querySelector("#dog-card .card");
       const button = document.querySelector("#new-dog");
       let currentIndex = initialIndex;
+      let startX = 0;
+      let dragX = 0;
+      let isDragging = false;
 
-      button?.addEventListener("click", () => {
+      const showNextDog = () => {
         if (!card || dogs.length === 0) return;
 
         let nextIndex = currentIndex;
@@ -61,22 +63,78 @@ const initialDog = results[initialIndex];
         const dog = dogs[nextIndex];
         const image = card.querySelector("img");
         const name = card.querySelector("h2");
-        const caption = card.querySelector("p");
-        const link = card.querySelector("a");
 
         image.src = `/api/image/${dog.image_key}`;
         image.alt = dog.dog_name;
         name.textContent = dog.dog_name;
 
-        caption.textContent = dog.caption ?? "";
-        caption.hidden = !dog.caption;
-
-        link.textContent = dog.link ?? "";
-        link.href = dog.link ?? "";
-        link.hidden = !dog.link;
-
         currentIndex = nextIndex;
+      };
+
+      const resetCard = () => {
+        if (!card) return;
+        card.style.transform = "";
+        card.style.opacity = "";
+        card.classList.remove("is-dragging");
+      };
+
+      const advanceWithAnimation = () => {
+        if (!card || card.classList.contains("is-advancing")) return;
+        card.classList.remove("is-dragging");
+        card.classList.add("is-advancing");
+        card.style.transform = "translateX(120%) rotate(12deg)";
+        card.style.opacity = "0";
+
+        window.setTimeout(() => {
+          showNextDog();
+          card.style.transition = "none";
+          card.style.transform = "translateX(-24px) rotate(-2deg)";
+          card.style.opacity = "0";
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              card.style.transition = "";
+              resetCard();
+              card.classList.remove("is-advancing");
+            });
+          });
+        }, 220);
+      };
+
+      button?.addEventListener("click", advanceWithAnimation);
+
+      card?.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+        startX = event.clientX;
+        dragX = 0;
+        isDragging = true;
+        card.classList.add("is-dragging");
+        card.setPointerCapture(event.pointerId);
       });
+
+      card?.addEventListener("pointermove", (event) => {
+        if (!isDragging) return;
+        dragX = Math.max(0, event.clientX - startX);
+        const rotation = Math.min(dragX / 18, 10);
+        card.style.transform = `translateX(${dragX}px) rotate(${rotation}deg)`;
+      });
+
+      const finishSwipe = (event) => {
+        if (!isDragging || !card) return;
+        isDragging = false;
+        if (card.hasPointerCapture(event.pointerId)) {
+          card.releasePointerCapture(event.pointerId);
+        }
+
+        if (dragX >= Math.min(120, card.clientWidth * 0.25)) {
+          advanceWithAnimation();
+        } else {
+          resetCard();
+        }
+      };
+
+      card?.addEventListener("pointerup", finishSwipe);
+      card?.addEventListener("pointercancel", finishSwipe);
     </script>
   )}
 </Layout>
@@ -96,7 +154,17 @@ const initialDog = results[initialIndex];
   }
 
   #dog-card {
-    width: 100%;
+    width: min(100%, 520px);
+    perspective: 1000px;
+  }
+
+  .swipe-hint {
+    margin-bottom: -0.4rem;
+    color: #0a2d6e;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
   }
 
   button {

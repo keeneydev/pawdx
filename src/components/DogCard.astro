@@ -2,40 +2,54 @@
 interface Props {
   id: string;
   dogName: string;
-  caption?: string;
-  link?: string;
   imageKey: string;
 }
 
-const { id, dogName, caption, link, imageKey } = Astro.props;
+const { id, dogName, imageKey } = Astro.props;
 ---
 
 <article class="card">
   <img src={`/api/image/${imageKey}`} alt={dogName} loading="lazy" />
   <div class="info">
     <h2>{dogName}</h2>
-    <p hidden={!caption}>{caption}</p>
-    <a href={link} target="_blank" rel="noopener noreferrer" hidden={!link}>{link}</a>
   </div>
 </article>
 
 <style>
   .card {
+    position: relative;
     background: #fff;
-    border-radius: 16px;
+    border: 6px solid #fff;
+    border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 12px 32px rgba(10, 45, 110, 0.18);
+    box-shadow: 0 16px 40px rgba(10, 45, 110, 0.28);
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    transition: transform 220ms ease, opacity 180ms ease, box-shadow 180ms ease;
+    will-change: transform;
+  }
+
+  .card.is-dragging {
+    cursor: grabbing;
+    transition: none;
+    box-shadow: 0 22px 48px rgba(10, 45, 110, 0.34);
   }
 
   .card img {
     width: 100%;
-    aspect-ratio: 3 / 2;
+    aspect-ratio: 4 / 5;
     object-fit: cover;
     display: block;
+    pointer-events: none;
   }
 
   .info {
-    padding: 1.25rem 1.4rem 1.4rem;
+    position: absolute;
+    inset: auto 0 0;
+    padding: 5rem 1.4rem 1.4rem;
+    color: #fff;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.82));
   }
 
   h2 {
@@ -43,14 +57,4 @@ const { id, dogName, caption, link, imageKey } = Astro.props;
     margin-bottom: 0.35rem;
   }
 
-  p {
-    color: #555;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-
-  a {
-    font-size: 0.85rem;
-    word-break: break-all;
-  }
 </style>
