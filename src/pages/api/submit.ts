@@ -1,8 +1,8 @@
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 import { imageKey } from "../../lib/r2";
 
-export const POST: APIRoute = async ({ locals, request }) => {
-  const env = locals.runtime.env;
+export const POST: APIRoute = async ({ request }) => {
   const form = await request.formData();
 
   const dogName = form.get("dog_name");

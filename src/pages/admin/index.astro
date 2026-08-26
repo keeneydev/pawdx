@@ -1,8 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { env } from "cloudflare:workers";
 
 const cookie = Astro.cookies.get("admin_session");
-const env = Astro.locals.runtime.env;
 const authenticated = cookie?.value === env.ADMIN_PASSWORD;
 
 if (!authenticated) {

@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 
-export const POST: APIRoute = async ({ locals, request, cookies, redirect }) => {
-  const env = locals.runtime.env;
+export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const form = await request.formData();
   const password = form.get("password");
 
