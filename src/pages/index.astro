@@ -16,40 +16,117 @@ const db = env.DB;
 const { results } = await db
   .prepare("SELECT id, dog_name, caption, link, image_key FROM submissions WHERE status = 'approved' ORDER BY created_at DESC")
   .all<Dog>();
+
+const initialIndex = results.length > 0 ? Math.floor(Math.random() * results.length) : -1;
+const initialDog = results[initialIndex];
 ---
 
 <Layout title="pawdx — dogs of the internet">
   <Header />
   <main>
-    {results.length === 0 ? (
+    {!initialDog ? (
       <p class="empty">No dogs yet. Be the first to <a href="/submit">submit one</a>!</p>
     ) : (
-      <div class="grid">
-        {results.map((dog) => (
+      <section class="gallery" aria-label="Random dog gallery">
+        <div id="dog-card" aria-live="polite">
           <DogCard
-            id={dog.id}
-            dogName={dog.dog_name}
-            caption={dog.caption ?? undefined}
-            link={dog.link ?? undefined}
-            imageKey={dog.image_key}
+            id={initialDog.id}
+            dogName={initialDog.dog_name}
+            caption={initialDog.caption ?? undefined}
+            link={initialDog.link ?? undefined}
+            imageKey={initialDog.image_key}
           />
-        ))}
-      </div>
+        </div>
+        <button id="new-dog" type="button">Show me another dog</button>
+      </section>
     )}
   </main>
+
+  {initialDog && (
+    <script define:vars={{ dogs: results, initialIndex }}>
+      const card = document.querySelector("#dog-card .card");
+      const button = document.querySelector("#new-dog");
+      let currentIndex = initialIndex;
+
+      button?.addEventListener("click", () => {
+        if (!card || dogs.length === 0) return;
+
+        let nextIndex = currentIndex;
+        if (dogs.length > 1) {
+          while (nextIndex === currentIndex) {
+            nextIndex = Math.floor(Math.random() * dogs.length);
+          }
+        }
+
+        const dog = dogs[nextIndex];
+        const image = card.querySelector("img");
+        const name = card.querySelector("h2");
+        const caption = card.querySelector("p");
+        const link = card.querySelector("a");
+
+        image.src = `/api/image/${dog.image_key}`;
+        image.alt = dog.dog_name;
+        name.textContent = dog.dog_name;
+
+        caption.textContent = dog.caption ?? "";
+        caption.hidden = !dog.caption;
+
+        link.textContent = dog.link ?? "";
+        link.href = dog.link ?? "";
+        link.hidden = !dog.link;
+
+        currentIndex = nextIndex;
+      });
+    </script>
+  )}
 </Layout>
 
 <style>
   main {
-    max-width: 960px;
+    width: min(100% - 2rem, 720px);
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: clamp(2rem, 6vw, 4rem) 0;
   }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+  .gallery {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  #dog-card {
+    width: 100%;
+  }
+
+  button {
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    background: #0a2d6e;
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    padding: 0.85rem 1.5rem;
+    box-shadow: 0 3px 0 #061c46;
+    transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  }
+
+  button:hover {
+    background: #123f8d;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 0 #061c46;
+  }
+
+  button:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #061c46;
+  }
+
+  button:focus-visible {
+    outline: 3px solid #e84ba5;
+    outline-offset: 3px;
   }
 
   .empty {

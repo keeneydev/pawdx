@@ -14,38 +14,39 @@ const { id, dogName, caption, link, imageKey } = Astro.props;
   <img src={`/api/image/${imageKey}`} alt={dogName} loading="lazy" />
   <div class="info">
     <h2>{dogName}</h2>
-    {caption && <p>{caption}</p>}
-    {link && <a href={link} target="_blank" rel="noopener noreferrer">{link}</a>}
+    <p hidden={!caption}>{caption}</p>
+    <a href={link} target="_blank" rel="noopener noreferrer" hidden={!link}>{link}</a>
   </div>
 </article>
 
 <style>
   .card {
     background: #fff;
-    border-radius: 8px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 32px rgba(10, 45, 110, 0.18);
   }
 
   .card img {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 2;
     object-fit: cover;
     display: block;
   }
 
   .info {
-    padding: 1rem;
+    padding: 1.25rem 1.4rem 1.4rem;
   }
 
   h2 {
-    font-size: 1.1rem;
-    margin-bottom: 0.25rem;
+    font-size: clamp(1.25rem, 4vw, 1.6rem);
+    margin-bottom: 0.35rem;
   }
 
   p {
     color: #555;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    line-height: 1.5;
   }
 
   a {
