@@ -1,0 +1,63 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='185' height='370' viewBox='0 0 185 370' overflow='hidden'>
+  <defs>
+    <g id='m'>
+      <g transform='matrix(0.3536,-0.3536,0.3536,0.3536,-17.58,138.6071)'>
+        <!-- Pink/magenta squares (left arm decoration) -->
+        <rect x='1.204' y='186.341' width='17' height='17' fill='#E84BA5'/>
+        <rect x='27.204' y='186.341' width='17' height='17' fill='#E84BA5'/>
+        <rect x='53.204' y='186.341' width='17' height='17' fill='#E84BA5'/>
+        <!-- Dark blue singles/diagonals -->
+        <rect x='212.996' y='1' width='17' height='17' fill='#0A2D6E'/>
+        <rect x='369.519' y='312.014' width='17' height='17' fill='#0A2D6E'/>
+        <rect x='346.519' y='289.014' width='17' height='17' fill='#0A2D6E'/>
+        <rect x='323.519' y='266.014' width='17' height='17' fill='#0A2D6E'/>
+        <!-- Light blue column -->
+        <rect x='213.067' y='323.901' width='17' height='17' fill='#5B7FCC'/>
+        <rect x='213.067' y='299.901' width='17' height='17' fill='#5B7FCC'/>
+        <rect x='213.067' y='276.901' width='17' height='17' fill='#5B7FCC'/>
+        <rect x='213.067' y='253.901' width='17' height='17' fill='#5B7FCC'/>
+        <!-- Dark blue diagonal (lower-left) -->
+        <rect x='143.956' y='229.17' width='17' height='17' fill='#0A2D6E'/>
+        <rect x='166.956' y='206.17' width='17' height='17' fill='#0A2D6E'/>
+        <rect x='189.956' y='183.17' width='17' height='17' fill='#0A2D6E'/>
+        <!-- Purple row -->
+        <rect x='376.996' y='134.811' width='17' height='17' fill='#837EC4'/>
+        <rect x='353.996' y='134.811' width='17' height='17' fill='#837EC4'/>
+        <rect x='330.996' y='134.811' width='17' height='17' fill='#837EC4'/>
+        <rect x='307.996' y='134.811' width='17' height='17' fill='#837EC4'/>
+        <rect x='283.996' y='134.811' width='17' height='17' fill='#837EC4'/>
+        <rect x='259.996' y='134.811' width='17' height='17' fill='#837EC4'/>
+        <rect x='235.996' y='134.811' width='17' height='17' fill='#837EC4'/>
+        <!-- Pink/magenta square near center -->
+        <rect x='235.996' y='160' width='17' height='17' fill='#E84BA5'/>
+        <!-- Coral-red accent squares (along short arm / near center) -->
+        <rect x='235.996' y='186' width='17' height='17' fill='#EF4044'/>
+        <rect x='235.996' y='212' width='17' height='17' fill='#EF4044'/>
+        <rect x='235.996' y='238' width='17' height='17' fill='#EF4044'/>
+        <!-- Cross bars (the + shape) -->
+        <rect x='212.996' y='23' width='17' height='130' fill='#0A2D6E'/>
+        <rect x='1' y='160' width='206' height='17' fill='#0A2D6E'/>
+        <rect x='212.996' y='184' width='17' height='62' fill='#0A2D6E'/>
+        <rect x='212.996' y='160' width='17' height='17' fill='#0A2D6E'/>
+      </g>
+    </g>
+  </defs>
+
+  <!-- Row 0 motifs -->
+  <use href='#m' x='0' y='0'/>
+  <use href='#m' x='185' y='0'/>
+  <use href='#m' x='-185' y='0'/>
+
+  <!-- Row 1 motifs (staggered) -->
+  <use href='#m' x='-93' y='185'/>
+  <use href='#m' x='92' y='185'/>
+
+  <!-- Row -1 motifs (above, for top edge wrapping) -->
+  <use href='#m' x='-93' y='-185'/>
+  <use href='#m' x='92' y='-185'/>
+
+  <!-- Row 2 motifs (below, for bottom edge wrapping) -->
+  <use href='#m' x='0' y='370'/>
+  <use href='#m' x='185' y='370'/>
+  <use href='#m' x='-185' y='370'/>
+</svg>
