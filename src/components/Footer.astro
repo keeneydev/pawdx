@@ -1,0 +1,30 @@
+---
+const phrases = [
+  "Made with \u2764\ufe0f in the dog park",
+  "Powered by belly rubs",
+  "Fueled by zoomies",
+  "Built with treats and tail wags",
+  "Crafted during walkies",
+  "Inspired by good boys and girls",
+];
+
+const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+---
+
+<footer>
+  <p>{phrase}</p>
+</footer>
+
+<style>
+  footer {
+    margin-top: auto;
+    border-top: 1px solid #d8d4ca;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: #3f4f3b;
+    background: rgba(250, 249, 246, 0.96);
+    font-size: 0.85rem;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+  }
+</style>
